@@ -9,8 +9,8 @@ import (
 
 func commandMap(configuration *config) error {
 	url := "https://pokeapi.co/api/v2/location-area/"
-	if configuration.next != "" {
-		url = configuration.next
+	if configuration.next != nil {
+		url = *configuration.next
 	}
 	res, err := http.Get(url)
 	if err != nil {
@@ -39,7 +39,7 @@ func commandMap(configuration *config) error {
 
 type PokeDexArea struct {
 	Count    int     `json:"count"`
-	Next     string  `json:"next"`
+	Next     *string `json:"next"`
 	Previous *string `json:"previous"`
 	Results  []struct {
 		Name string `json:"name"`

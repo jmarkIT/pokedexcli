@@ -48,7 +48,7 @@ type cliCommand struct {
 }
 
 type config struct {
-	next     string
+	next     *string
 	previous *string
 }
 
@@ -68,6 +68,11 @@ func getCommands() map[string]cliCommand {
 			name:        "map",
 			description: "Display the next 20 locations",
 			callback:    commandMap,
+		},
+		"mapb": {
+			name:        "mapb",
+			description: "Display's the previous 20 location",
+			callback:    commandMapB,
 		},
 	}
 }

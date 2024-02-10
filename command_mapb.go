@@ -9,7 +9,7 @@ import (
 )
 
 func commandMapB(configuration *config) error {
-	if *configuration.previous == "" {
+	if configuration.previous == nil {
 		return errors.New("No previous page locations to display")
 	}
 
