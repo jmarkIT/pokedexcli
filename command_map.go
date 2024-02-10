@@ -1,48 +1,40 @@
 package main
 
 import (
-	"encoding/json"
+	"errors"
 	"fmt"
-	"io"
-	"net/http"
 )
 
-func commandMap(configuration *config) error {
-	url := "https://pokeapi.co/api/v2/location-area/"
-	if configuration.next != nil {
-		url = *configuration.next
-	}
-	res, err := http.Get(url)
+func commandMap(cfg *config) error {
+	locationsResp, err := cfg.pokeapiClient.ListLocations(cfg.nextLocationsURL)
 	if err != nil {
 		return err
 	}
 
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		return err
-	}
-	res.Body.Close()
+	cfg.nextLocationsURL = locationsResp.Next
+	cfg.previousLocationsURL = locationsResp.Previous
 
-	var areas PokeDexArea
-	if err := json.Unmarshal(body, &areas); err != nil {
-		return err
+	for _, loc := range locationsResp.Results {
+		fmt.Println(loc.Name)
 	}
-
-	for _, area := range areas.Results {
-		fmt.Println(area.Name)
-	}
-
-	configuration.next = areas.Next
-	configuration.previous = areas.Previous
 	return nil
 }
 
-type PokeDexArea struct {
-	Count    int     `json:"count"`
-	Next     *string `json:"next"`
-	Previous *string `json:"previous"`
-	Results  []struct {
-		Name string `json:"name"`
-		URL  string `json:"url"`
-	} `json:"results"`
+func commandMapb(cfg *config) error {
+	if cfg.previousLocationsURL == nil {
+		return errors.New("you're on the first page")
+	}
+
+	locationsResp, err := cfg.pokeapiClient.ListLocations(cfg.previousLocationsURL)
+	if err != nil {
+		return err
+	}
+
+	cfg.nextLocationsURL = locationsResp.Next
+	cfg.previousLocationsURL = locationsResp.Previous
+
+	for _, loc := range locationsResp.Results {
+		fmt.Println(loc.Name)
+	}
+	return nil
 }
