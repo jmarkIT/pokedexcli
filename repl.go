@@ -7,9 +7,10 @@ import (
 	"strings"
 
 	"github.com/jmarkIT/pokedexcli/internal/pokeapi"
+	"github.com/jmarkIT/pokedexcli/internal/pokecache"
 )
 
-func startRepl(cfg *config) {
+func startRepl(cfg *config, cache *pokecache.Cache) {
 	reader := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex > ")
@@ -24,7 +25,7 @@ func startRepl(cfg *config) {
 
 		command, exists := getCommands()[commandName]
 		if exists {
-			err := command.callback(cfg)
+			err := command.callback(cfg, cache)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -45,7 +46,7 @@ func cleanInput(text string) []string {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(config *config) error
+	callback    func(cfg *config, cache *pokecache.Cache) error
 }
 
 type config struct {
