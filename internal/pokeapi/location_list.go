@@ -21,7 +21,7 @@ func (c *Client) ListLocations(pageURL *string, cache *pokecache.Cache) (RespSha
 	if dat, exists := cache.Get(url); exists {
 		err := json.Unmarshal(dat, &locationsResp)
 		if err != nil {
-			return RespShallowLocations{}, nil
+			return RespShallowLocations{}, err
 		}
 		return locationsResp, nil
 	}
@@ -45,10 +45,10 @@ func (c *Client) ListLocations(pageURL *string, cache *pokecache.Cache) (RespSha
 
 	err = json.Unmarshal(dat, &locationsResp)
 	if err != nil {
-		// Make sure to add to the cache for next time
-		cache.Add(url, dat)
 		return RespShallowLocations{}, err
 	}
 
+	// Make sure to cache the data for later
+	cache.Add(url, dat)
 	return locationsResp, nil
 }
