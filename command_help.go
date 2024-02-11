@@ -6,7 +6,7 @@ import (
 	"github.com/jmarkIT/pokedexcli/internal/pokecache"
 )
 
-func commandHelp(cfg *config, cache *pokecache.Cache) error {
+func commandHelp(cfg *config, cache *pokecache.Cache, _ string) error {
 	fmt.Println()
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Usage:")

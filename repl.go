@@ -22,10 +22,16 @@ func startRepl(cfg *config, cache *pokecache.Cache) {
 		}
 
 		commandName := words[0]
+		var subCommand string
+		if len(words) > 1 {
+			subCommand = words[1]
+		} else {
+			subCommand = ""
+		}
 
 		command, exists := getCommands()[commandName]
 		if exists {
-			err := command.callback(cfg, cache)
+			err := command.callback(cfg, cache, subCommand)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -46,7 +52,7 @@ func cleanInput(text string) []string {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(cfg *config, cache *pokecache.Cache) error
+	callback    func(cfg *config, cache *pokecache.Cache, area string) error
 }
 
 type config struct {
@@ -71,6 +77,11 @@ func getCommands() map[string]cliCommand {
 			name:        "mapb",
 			description: "Display's the previous 20 location",
 			callback:    commandMapb,
+		},
+		"explore": {
+			name:        "explore",
+			description: "Displays all the pokemon found in the provided area",
+			callback:    commandExplore,
 		},
 		"exit": {
 			name:        "exit",
