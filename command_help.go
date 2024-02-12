@@ -3,10 +3,11 @@ package main
 import (
 	"fmt"
 
+	"github.com/jmarkIT/pokedexcli/internal/pokeapi"
 	"github.com/jmarkIT/pokedexcli/internal/pokecache"
 )
 
-func commandHelp(cfg *config, cache *pokecache.Cache, _ string) error {
+func commandHelp(cfg *config, cache *pokecache.Cache, _ string, _ map[string]pokeapi.RespPokemon) error {
 	fmt.Println()
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Usage:")

@@ -12,6 +12,7 @@ import (
 
 func startRepl(cfg *config, cache *pokecache.Cache) {
 	reader := bufio.NewScanner(os.Stdin)
+	pokedex := make(map[string]pokeapi.RespPokemon)
 	for {
 		fmt.Print("Pokedex > ")
 		reader.Scan()
@@ -31,7 +32,7 @@ func startRepl(cfg *config, cache *pokecache.Cache) {
 
 		command, exists := getCommands()[commandName]
 		if exists {
-			err := command.callback(cfg, cache, subCommand)
+			err := command.callback(cfg, cache, subCommand, pokedex)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -52,7 +53,7 @@ func cleanInput(text string) []string {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(cfg *config, cache *pokecache.Cache, area string) error
+	callback    func(cfg *config, cache *pokecache.Cache, area string, pokedex map[string]pokeapi.RespPokemon) error
 }
 
 type config struct {
@@ -82,6 +83,11 @@ func getCommands() map[string]cliCommand {
 			name:        "explore",
 			description: "Displays all the pokemon found in the provided area",
 			callback:    commandExplore,
+		},
+		"catch": {
+			name:        "catch",
+			description: "Attempt to catch the provided pokemon",
+			callback:    commandCatch,
 		},
 		"exit": {
 			name:        "exit",

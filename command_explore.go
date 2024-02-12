@@ -4,10 +4,11 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/jmarkIT/pokedexcli/internal/pokeapi"
 	"github.com/jmarkIT/pokedexcli/internal/pokecache"
 )
 
-func commandExplore(cfg *config, cache *pokecache.Cache, area string) error {
+func commandExplore(cfg *config, cache *pokecache.Cache, area string, _ map[string]pokeapi.RespPokemon) error {
 	if area == "" {
 		return errors.New("please provide the area to explore")
 	}
